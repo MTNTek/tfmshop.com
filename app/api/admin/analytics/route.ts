@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import Database from 'better-sqlite3';
 
 export async function GET(request: NextRequest) {
@@ -71,7 +70,7 @@ export async function GET(request: NextRequest) {
 
       salesData.push({
         date: date.toISOString().split('T')[0],
-        sales: dayRevenue.sales
+        sales: (dayRevenue as any)?.sales || 0
       });
     }
 
@@ -83,7 +82,7 @@ export async function GET(request: NextRequest) {
       GROUP BY status
     `).all(startDate.getTime());
 
-    const orderStatusDistribution = statusDistribution.map(item => ({
+    const orderStatusDistribution = statusDistribution.map((item: any) => ({
       name: item.status.charAt(0).toUpperCase() + item.status.slice(1),
       value: item.count
     }));
@@ -104,10 +103,10 @@ export async function GET(request: NextRequest) {
     sqlite.close();
 
     const analytics = {
-      totalRevenue: revenueResult.total_revenue,
-      totalOrders: ordersResult.total_orders,
-      totalProducts: productsResult.total_products,
-      totalCustomers: customersResult.total_customers,
+      totalRevenue: (revenueResult as any)?.total_revenue || 0,
+      totalOrders: (ordersResult as any)?.total_orders || 0,
+      totalProducts: (productsResult as any)?.total_products || 0,
+      totalCustomers: (customersResult as any)?.total_customers || 0,
       recentOrders,
       salesData,
       productPerformance,

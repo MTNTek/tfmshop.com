@@ -100,13 +100,11 @@ export async function PUT(request: NextRequest) {
       // Send notification for specific status changes
       if (status === 'shipped' || status === 'delivered') {
         try {
-          const orderData = {
-            ...order,
-            shipping_address: JSON.parse(order.shipping_address),
-            payment_method: JSON.parse(order.payment_method)
-          };
-
-          // Get order items
+      const orderData = {
+        ...(order as any),
+        shipping_address: JSON.parse((order as any).shipping_address),
+        payment_method: JSON.parse((order as any).payment_method)
+      };          // Get order items
           const items = sqlite.prepare(
             'SELECT * FROM order_items WHERE order_id = ?'
           ).all(orderId);
