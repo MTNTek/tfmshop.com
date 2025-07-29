@@ -189,7 +189,28 @@ When all tests pass, you should have:
 
 ## 🌍 **Public Deployment for International Sharing**
 
-### Quick Deployment Commands
+### 📁 **GitHub Repository Setup**
+
+Your TFMShop project has been committed locally! To push to GitHub:
+
+1. **Create GitHub Repository**:
+   - Go to [github.com/new](https://github.com/new)
+   - Repository name: `tfmshop-ecommerce`
+   - Description: `🚀 Complete Next.js 15 E-commerce Platform with Analytics Dashboard, Wishlist System, and Admin Interface`
+   - Set to **Public**
+   - Click "Create repository"
+
+2. **Push to GitHub**:
+```bash
+# Add GitHub remote
+git remote add origin https://github.com/YOUR_USERNAME/tfmshop-ecommerce.git
+
+# Push to GitHub
+git branch -M main
+git push -u origin main
+```
+
+### 🚀 **Quick Deployment Commands**
 ```bash
 # Navigate to project directory
 cd c:\dev\tfmshop.com
