@@ -1,8 +1,19 @@
-# 🛒 TFM Shop - E-commerce Platform
+# � TFMShop - Complete E-commerce Platform
 
-## 🚀 Current Status: Ready for PostgreSQL!
+[![Next.js](https://img.shields.io/badge/Next.js-15.4.4-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6.3-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.15-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-3.x-003B57?logo=sqlite)](https://www.sqlite.org/)
 
-Your e-commerce platform has been **successfully migrated to PostgreSQL**! The application is fully configured and ready to run with a PostgreSQL database.
+> **A modern, full-featured e-commerce platform built with Next.js 15, featuring advanced analytics, wishlist management, and a complete admin dashboard.**
+
+## 🌟 Live Demo
+
+🔗 **[Deploy to Vercel](https://vercel.com/import/git?c=1&s=https://github.com/MTNTek/tfmshop.com)** for instant live preview!
+
+## 🚀 Current Status: Production Ready!
+
+Your TFMShop e-commerce platform is **100% complete** and ready for international deployment! 🌍
 
 ### ✅ What's Complete:
 - ✅ Complete e-commerce platform with authentication

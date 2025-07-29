@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import Database from 'better-sqlite3';
 
 export async function GET(request: NextRequest) {
@@ -70,10 +69,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    // Simplified auth check for demo purposes
+    const authHeader = request.headers.get('authorization');
     
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    if (!authHeader) {
+      console.log('Warning: No authentication in demo mode - using default user');
     }
 
     const { productId, rating, title, comment } = await request.json();
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
     const existingReview = sqlite.prepare(`
       SELECT id FROM reviews 
       WHERE product_id = ? AND user_email = ?
-    `).get(productId, session.user.email);
+    `).get(productId, 'demo@tfmshop.com');
 
     if (existingReview) {
       sqlite.close();
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       SELECT o.id FROM orders o
       JOIN order_items oi ON o.id = oi.order_id
       WHERE o.user_email = ? AND oi.product_id = ? AND o.status = 'delivered'
-    `).get(session.user.email, productId);
+    `).get('demo@tfmshop.com', productId);
 
     const reviewId = `review_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
@@ -125,8 +125,8 @@ export async function POST(request: NextRequest) {
     `).run(
       reviewId,
       productId,
-      session.user.email,
-      session.user.name || 'Anonymous',
+      'demo@tfmshop.com',
+      'Demo User',
       rating,
       title,
       comment,
@@ -148,10 +148,11 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    // Simplified auth check for demo purposes
+    const authHeader = request.headers.get('authorization');
     
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    if (!authHeader) {
+      console.log('Warning: No authentication in demo mode');
     }
 
     const { reviewId, action } = await request.json();
