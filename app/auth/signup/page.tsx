@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,10 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import Link from 'next/link'
 
 export default function SignUp() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [username, setUsername] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -24,40 +22,51 @@ export default function SignUp() {
     setLoading(true)
     setError('')
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      setLoading(false)
-      return
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+    if (!username.trim()) {
+      setError('Username is required')
       setLoading(false)
       return
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
+      // In demo mode, signup immediately signs the user in
+      const result = await signIn('demo', {
+        username,
+        redirect: false,
       })
 
-      const data = await response.json()
-
-      if (response.ok) {
+      if (result?.error) {
+        setError(result.error)
+      } else {
         setSuccess(true)
         setTimeout(() => {
-          router.push('/auth/signin')
-        }, 2000)
+          router.push('/')
+        }, 1500)
+      }
+    } catch (error) {
+      setError('An unexpected error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDemoSignup = async () => {
+    setLoading(true)
+    setError('')
+
+    try {
+      const result = await signIn('demo', {
+        username: 'demo_user',
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError(result.error)
       } else {
-        setError(data.error || 'Registration failed')
+        setSuccess(true)
+        setTimeout(() => {
+          router.push('/')
+        }, 1500)
       }
     } catch (error) {
       setError('An unexpected error occurred')
@@ -88,10 +97,10 @@ export default function SignUp() {
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Registration Successful!
+                Welcome to TFMShop!
               </h3>
               <p className="text-sm text-gray-500">
-                Your account has been created. Redirecting to sign in...
+                Account created successfully. Redirecting to home...
               </p>
             </div>
           </CardContent>
@@ -104,9 +113,9 @@ export default function SignUp() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+          <CardTitle className="text-2xl font-bold">Join TFMShop</CardTitle>
           <CardDescription>
-            Sign up for a new account to get started
+            Create your account to start shopping our amazing products
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -118,52 +127,15 @@ export default function SignUp() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="username">Choose a Username</Label>
               <Input
-                id="name"
+                id="username"
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
                 required
                 disabled={loading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={loading}
-                minLength={6}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={loading}
-                minLength={6}
               />
             </div>
 
@@ -175,6 +147,26 @@ export default function SignUp() {
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or
+              </span>
+            </div>
+          </div>
+
+          <Button 
+            onClick={handleDemoSignup}
+            variant="outline" 
+            className="w-full" 
+            disabled={loading}
+          >
+            {loading ? 'Signing Up...' : 'Try Demo Account'}
+          </Button>
 
           <div className="text-center text-sm">
             Already have an account?{' '}
